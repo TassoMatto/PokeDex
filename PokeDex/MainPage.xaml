@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokeDex.MainPage"
+             xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
+             x:DataType="viewmodel:MainPageVM"
+             xmlns:models="clr-namespace:PokeDex.Models">
+
+    <StackLayout>
+        <!-- Commenti per ricordarmi -->
+        <CollectionView 
+            ItemsSource="{Binding pokemonORC}" 
+            VerticalOptions="FillAndExpand" 
+            RemainingItemsThreshold="1" 
+            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}">
+            
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="models:Pokemon">
+                    <Border BackgroundColor="Gray" Padding="10" Margin="10">
+                        <VerticalStackLayout x:DataType="models:Pokemon">
+
+                            <HorizontalStackLayout>
+
+                                <Label Text="Nome: "></Label>
+                                <Label Text="{Binding name}"></Label>
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+
+                                <Label Text="name"></Label>
+                                <Label Text="{Binding name}"></Label>
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+
+                                <Label Text="name"></Label>
+                                <Label Text="{Binding name}"></Label>
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+
+                                <Label Text="name"></Label>
+                                <Label Text="{Binding name}"></Label>
+                            </HorizontalStackLayout>
+
+                            <HorizontalStackLayout>
+
+                                <Label Text="name"></Label>
+                                <Label Text="{Binding name}"></Label>
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</ContentPage>
