@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace PokeDex.ViewModels
 {
@@ -23,7 +24,8 @@ namespace PokeDex.ViewModels
 
         private int limit = 20;
 
-        //List<Pokemon> pokeList;  
+        bool handling = false;
+
         public ObservableRangeCollection<Pokemon> pokemonORC { get; set; } = new ObservableRangeCollection<Pokemon>();
 
         public ICommand LoadMorePokemonsCommand { get; }
@@ -40,7 +42,24 @@ namespace PokeDex.ViewModels
             try
             {
                 var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>();
-                pokemonORC.AddRange(resultAPI.Take(pageSize)); //! Bisogna capire come fare
+                List<Pokemon> temp = resultAPI.ToList();
+                var toAdd = temp.Select(jsonRes => {
+                    if(Nullable.Equals(jsonRes.url, null)) {
+                        return null;
+                    }
+                    string[] parts = (new Uri(jsonRes.url)).Segments;
+                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", ""))  : -1;
+                    return new PokemonRow
+                    {
+                        name = jsonRes.name,
+                        url = jsonRes.url,
+                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
+                        id = id,
+                    };
+                }).ToList();
+
+                Console.WriteLine(toAdd);
+                pokemonORC.AddRange(toAdd.Take(pageSize));
             }
             catch (Exception ex)
             {
@@ -48,14 +67,36 @@ namespace PokeDex.ViewModels
             }
         }
 
-        [RelayCommand]
         public async Task getNextPokemonChunck()
         {
+            if (handling) return;
+
+            handling = true;
             try
             {
                 var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>(this.offset, this.limit);
-                pokemonORC.AddRange(resultAPI.Take(pageSize));
+                List<Pokemon> temp = resultAPI.ToList();
+                var toAdd = temp.Select(jsonRes => {
+                    if (Nullable.Equals(jsonRes.url, null))
+                    {
+                        return null;
+                    }
+                    string[] parts = (new Uri(jsonRes.url)).Segments;
+                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", "")) : -1;
+                    return new PokemonRow
+                    {
+                        name = jsonRes.name,
+                        url = jsonRes.url,
+                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
+                        id = id,
+                    };
+                }).ToList();
+
+                Console.WriteLine(toAdd);
+                pokemonORC.AddRange(toAdd.Take(pageSize));
                 this.offset += 20;
+
+                handling = false;
             }
             catch (Exception ex)
             {

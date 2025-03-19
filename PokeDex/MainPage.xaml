@@ -11,7 +11,7 @@
         <CollectionView 
             ItemsSource="{Binding pokemonORC}" 
             VerticalOptions="FillAndExpand" 
-            RemainingItemsThreshold="1" 
+            RemainingItemsThreshold="6" 
             RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}">
             
             <CollectionView.ItemTemplate>
@@ -21,32 +21,22 @@
                         <VerticalStackLayout x:DataType="models:Pokemon">
 
                             <HorizontalStackLayout>
-
+                                <Border
+                                    WidthRequest="100"
+                                    HeightRequest="100"
+                                    Stroke="Gray"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 200"
+                                    BackgroundColor="Red"
+                                    >
+                                    <Image
+                                        WidthRequest="99"
+                                        HeightRequest="99"
+                                        Source="{Binding img_url}">
+                                        
+                                    </Image>
+                                </Border>
                                 <Label Text="Nome: "></Label>
-                                <Label Text="{Binding name}"></Label>
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout>
-
-                                <Label Text="name"></Label>
-                                <Label Text="{Binding name}"></Label>
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout>
-
-                                <Label Text="name"></Label>
-                                <Label Text="{Binding name}"></Label>
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout>
-
-                                <Label Text="name"></Label>
-                                <Label Text="{Binding name}"></Label>
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout>
-
-                                <Label Text="name"></Label>
                                 <Label Text="{Binding name}"></Label>
                             </HorizontalStackLayout>
 
