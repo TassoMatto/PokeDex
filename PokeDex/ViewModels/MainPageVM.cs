@@ -1,16 +1,8 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using MvvmHelpers;
+﻿using MvvmHelpers;
 using PokeDex.Models;
 using PokeDex.Services;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml.Linq;
 
 namespace PokeDex.ViewModels
 {
@@ -34,29 +26,21 @@ namespace PokeDex.ViewModels
         {
             this.service = service;
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
-            loadPokemon();
+            
         }
 
-        public async void loadPokemon()
+        public async Task InitializeAsync()
+        {
+            await loadPokemon();
+        }
+
+        public async Task loadPokemon()
         {
             try
             {
                 var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>();
                 List<Pokemon> temp = resultAPI.ToList();
-                var toAdd = temp.Select(jsonRes => {
-                    if(Nullable.Equals(jsonRes.url, null)) {
-                        return null;
-                    }
-                    string[] parts = (new Uri(jsonRes.url)).Segments;
-                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", ""))  : -1;
-                    return new PokemonRow
-                    {
-                        name = jsonRes.name,
-                        url = jsonRes.url,
-                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
-                        id = id,
-                    };
-                }).ToList();
+                var toAdd = service.buildCollectionViewRowPokemon(temp);
 
                 Console.WriteLine(toAdd);
                 pokemonORC.AddRange(toAdd.Take(pageSize));
@@ -76,21 +60,7 @@ namespace PokeDex.ViewModels
             {
                 var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>(this.offset, this.limit);
                 List<Pokemon> temp = resultAPI.ToList();
-                var toAdd = temp.Select(jsonRes => {
-                    if (Nullable.Equals(jsonRes.url, null))
-                    {
-                        return null;
-                    }
-                    string[] parts = (new Uri(jsonRes.url)).Segments;
-                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", "")) : -1;
-                    return new PokemonRow
-                    {
-                        name = jsonRes.name,
-                        url = jsonRes.url,
-                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
-                        id = id,
-                    };
-                }).ToList();
+                var toAdd = service.buildCollectionViewRowPokemon(temp);
 
                 Console.WriteLine(toAdd);
                 pokemonORC.AddRange(toAdd.Take(pageSize));

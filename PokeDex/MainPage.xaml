@@ -6,21 +6,27 @@
              x:DataType="viewmodel:MainPageVM"
              xmlns:models="clr-namespace:PokeDex.Models">
 
-    <StackLayout>
-        <!-- Commenti per ricordarmi -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- Al posto della FillAndExpand ho usato la grid, impostato le caratteristiche e messo la CollView nella row1 in modo tale che si potesse scorrere -->
         <CollectionView 
-            ItemsSource="{Binding pokemonORC}" 
-            VerticalOptions="FillAndExpand" 
+            Grid.Row="1"
+            ItemsSource="{Binding pokemonORC}"
+            VerticalOptions="Fill"
             RemainingItemsThreshold="6" 
-            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}">
+            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}"
+            SelectionMode="Single"
+            SelectionChanged="OnClickPokemon">
             
             <CollectionView.ItemTemplate>
 
-                <DataTemplate x:DataType="models:Pokemon">
+                <DataTemplate x:DataType="models:PokemonRow">
                     <Border BackgroundColor="Gray" Padding="10" Margin="10">
-                        <VerticalStackLayout x:DataType="models:Pokemon">
-
-                            <HorizontalStackLayout>
+                        <VerticalStackLayout>
+                            <HorizontalStackLayout VerticalOptions="Center">
                                 <Border
                                     WidthRequest="100"
                                     HeightRequest="100"
@@ -33,19 +39,27 @@
                                         WidthRequest="99"
                                         HeightRequest="99"
                                         Source="{Binding img_url}">
-                                        
+
                                     </Image>
                                 </Border>
-                                <Label Text="Nome: "></Label>
-                                <Label Text="{Binding name}"></Label>
-                            </HorizontalStackLayout>
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <HorizontalStackLayout VerticalOptions="Center">
+                                        <Label Text="NOME:   " VerticalOptions="Center"></Label>
+                                        <Label Text="{Binding name}" VerticalOptions="Center"></Label>
+                                    </HorizontalStackLayout>
 
+                                    <HorizontalStackLayout VerticalOptions="Center">
+                                        <Label Text="NUMERO: " VerticalOptions="Center"></Label>
+                                        <Label Text="{Binding id}" VerticalOptions="Center"></Label>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
 
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </StackLayout>
+    </Grid>
 
 </ContentPage>

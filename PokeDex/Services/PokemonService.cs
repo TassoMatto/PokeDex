@@ -52,5 +52,33 @@ namespace PokeDex.Services
                 throw;
             }
         }
+
+        public List<PokemonRow> buildCollectionViewRowPokemon(List<Pokemon> pokemons)
+        {
+            try
+            {
+                var toAdd = pokemons.Select(jsonRes =>
+                {
+                    if (Nullable.Equals(jsonRes.url, null))
+                    {
+                        return null;
+                    }
+                    string[] parts = (new Uri(jsonRes.url)).Segments;
+                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", "")) : -1;
+                    return new PokemonRow
+                    {
+                        name = jsonRes.name,
+                        url = jsonRes.url,
+                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
+                        id = id,
+                    };
+                }).ToList();
+                return toAdd ?? new List<PokemonRow>();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
