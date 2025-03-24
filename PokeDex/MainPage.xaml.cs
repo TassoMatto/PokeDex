@@ -25,9 +25,10 @@ namespace PokeDex
             if (clickedPokemon != null && clickedPokemon is PokemonRow pokemon)
             {
                 var pokemonDetails = await service.GiveAbilitiesOfPokemon(pokemon.url);
+                var list = pokemonDetails.ToList();
 
                 // Passo i dettagli al popup
-                PopupAction.DisplayPopup(new InfoPokemonPopup(pokemonDetails.ToArray().FirstOrDefault()));
+                PopupAction.DisplayPopup(new InfoPokemonPopup(pokemon, list));
             }
         }
 

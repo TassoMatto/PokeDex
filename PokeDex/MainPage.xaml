@@ -28,6 +28,15 @@
 
                 <DataTemplate x:DataType="models:PokemonRow">
                     <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                         <VerticalStackLayout>
                             <HorizontalStackLayout VerticalOptions="Center">
                                 <Border
@@ -50,7 +59,7 @@
                                         <Label Text="NOME:   " VerticalOptions="Center"></Label>
                                         <Label Text="{Binding name}" VerticalOptions="Center"></Label>
                                     </HorizontalStackLayout>
-
+                                    
                                     <HorizontalStackLayout VerticalOptions="Center">
                                         <Label Text="NUMERO: " VerticalOptions="Center"></Label>
                                         <Label Text="{Binding id}" VerticalOptions="Center"></Label>

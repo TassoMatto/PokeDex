@@ -5,11 +5,45 @@
              xmlns:popup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
              IsCloseOnBackgroundClick="True"
              Title="PokemonInfoPopup"
+             xmlns:models="clr-namespace:PokeDex.Models"
              >
-    <VerticalStackLayout>
-        <Label Text="Nome pokemon"/>
-        <Label Text="Regione del pokemon"/>
-        <Label Text="Abilità"/>
+    <HorizontalStackLayout>
+        <Image
+            WidthRequest="90"
+            HeightRequest="90"
+            Source="{Binding img_url}">
+        </Image>
+        <Grid Padding="30" RowSpacing="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-    </VerticalStackLayout>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="N°:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,0" Grid.ColumnSpan="2" FontAttributes="Bold" />
+            <Label Text="{Binding id}" Grid.Row="0" Grid.Column="2" />
+
+            <Label Text="Nome:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,0" Grid.ColumnSpan="2" FontAttributes="Bold" />
+            <Label Text="{Binding name}" Grid.Row="1" Grid.Column="2" />
+
+            <Label Text="Abilità:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold" />
+            <HorizontalStackLayout Grid.Row="2" Grid.Column="2">
+
+                <CollectionView ItemsSource="{Binding abilities}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Ability">
+                            <Label Text="{Binding name}" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </HorizontalStackLayout>
+        </Grid>
+
+    </HorizontalStackLayout>
 </popup:BasePopupPage>
