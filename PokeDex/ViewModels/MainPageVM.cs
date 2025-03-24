@@ -18,7 +18,7 @@ namespace PokeDex.ViewModels
 
         bool handling = false;
 
-        public ObservableRangeCollection<Pokemon> pokemonORC { get; set; } = new ObservableRangeCollection<Pokemon>();
+        public ObservableRangeCollection<Ability> pokemonORC { get; set; } = new ObservableRangeCollection<Ability>();
 
         public ICommand LoadMorePokemonsCommand { get; }
 

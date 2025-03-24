@@ -45,10 +45,9 @@ namespace PokeDex.Services
 
                 return new List<Pokemon>();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // NOTIFICARE ERRORE
-
+                Console.WriteLine($"Errore: {ex.Message}");
                 throw;
             }
         }
@@ -80,5 +79,28 @@ namespace PokeDex.Services
                 throw;
             }
         }
+
+        public async Task<List<Ability>> GiveAbilitiesOfPokemon(string url)
+        {
+            try
+            {
+                var result = await _httpClient.GetAsync(url);
+                if (result.IsSuccessStatusCode)
+                {
+                    var response = await result.Content.ReadFromJsonAsync<AbilityRes<PokemonAbility<Ability>>>();
+                    if (response == null)
+                        throw new NullReferenceException("La risposta deserializzata è nulla");
+                    return response.abilities.Select(pokemonAbility => pokemonAbility.ability).ToList();
+                }
+
+                return new List<Ability>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

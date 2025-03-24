@@ -7,9 +7,9 @@
              Title="PokemonInfoPopup"
              >
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <Label Text="Nome pokemon"/>
+        <Label Text="Regione del pokemon"/>
+        <Label Text="Abilità"/>
+
     </VerticalStackLayout>
 </popup:BasePopupPage>

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace PokeDex.Models
 {
-    public class PokemonRow : Ability
-    {
-        public int? id { get; set; }
-
-        public string? img_url {  get; set; }
+    public class Ability
+    {   
+        public string? name { get; set; }
+        public string? url { get; set; }
     }
 }

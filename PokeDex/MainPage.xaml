@@ -11,7 +11,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <!-- Al posto della FillAndExpand ho usato la grid, impostato le caratteristiche e messo la CollView nella row1 in modo tale che si potesse scorrere -->
+        <!-- 
+            Al posto della FillAndExpand ho usato la grid, impostato le caratteristiche 
+            e messo la CollView nella row1 in modo tale che si potesse scorrere 
+        -->
         <CollectionView 
             Grid.Row="1"
             ItemsSource="{Binding pokemonORC}"
@@ -24,7 +27,7 @@
             <CollectionView.ItemTemplate>
 
                 <DataTemplate x:DataType="models:PokemonRow">
-                    <Border BackgroundColor="Gray" Padding="10" Margin="10">
+                    <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
                         <VerticalStackLayout>
                             <HorizontalStackLayout VerticalOptions="Center">
                                 <Border
@@ -33,7 +36,7 @@
                                     Stroke="Gray"
                                     StrokeThickness="1"
                                     StrokeShape="RoundRectangle 200"
-                                    BackgroundColor="Red"
+                                    BackgroundColor="White"
                                     >
                                     <Image
                                         WidthRequest="99"
@@ -42,7 +45,7 @@
 
                                     </Image>
                                 </Border>
-                                <VerticalStackLayout VerticalOptions="Center">
+                                <VerticalStackLayout VerticalOptions="Center" Margin="10">
                                     <HorizontalStackLayout VerticalOptions="Center">
                                         <Label Text="NOME:   " VerticalOptions="Center"></Label>
                                         <Label Text="{Binding name}" VerticalOptions="Center"></Label>
