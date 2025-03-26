@@ -6,6 +6,8 @@
              IsCloseOnBackgroundClick="True"
              Title="PokemonInfoPopup"
              xmlns:models="clr-namespace:PokeDex.Models"
+             xmlns:vm="clr-namespace:PokeDex.ViewModels"
+             x:DataType="vm:InfoPokemonPopupVM"
              >
     <HorizontalStackLayout>
         <Image

@@ -13,6 +13,6 @@ namespace PokeDex.Services
 
         public List<PokemonRow> buildCollectionViewRowPokemon(List<Pokemon> pokemons);
 
-        public Task<List<Ability>> GiveAbilitiesOfPokemon(string url);
+        public Task<List<Ability>> GiveAbilitiesOfPokemon(string? url);
     }
 }

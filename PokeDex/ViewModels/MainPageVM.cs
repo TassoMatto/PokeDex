@@ -18,7 +18,7 @@ namespace PokeDex.ViewModels
 
         bool handling = false;
 
-        public ObservableRangeCollection<Ability> pokemonORC { get; set; } = new ObservableRangeCollection<Ability>();
+        public ObservableRangeCollection<Pokemon> pokemonORC { get; set; } = new ObservableRangeCollection<Pokemon>();
 
         public ICommand LoadMorePokemonsCommand { get; }
 
@@ -29,11 +29,26 @@ namespace PokeDex.ViewModels
             
         }
 
+        /// <summary>
+        /// Inizializza la view
+        /// </summary>
+        /// <returns></returns>
         public async Task InitializeAsync()
         {
-            await loadPokemon();
+            try
+            {
+                await loadPokemon();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
         }
 
+        /// <summary>
+        /// Carica la prima lista di pokemon
+        /// </summary>
+        /// <returns></returns>
         public async Task loadPokemon()
         {
             try
@@ -41,8 +56,6 @@ namespace PokeDex.ViewModels
                 var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>();
                 List<Pokemon> temp = resultAPI.ToList();
                 var toAdd = service.buildCollectionViewRowPokemon(temp);
-
-                Console.WriteLine(toAdd);
                 pokemonORC.AddRange(toAdd.Take(pageSize));
             }
             catch (Exception ex)
@@ -51,6 +64,10 @@ namespace PokeDex.ViewModels
             }
         }
 
+        /// <summary>
+        /// Carica la prox lista di pokemon
+        /// </summary>
+        /// <returns></returns>
         public async Task getNextPokemonChunck()
         {
             if (handling) return;
