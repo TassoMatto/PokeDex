@@ -4,15 +4,17 @@
              x:Class="PokeDex.MainPage"
              xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
              xmlns:models="clr-namespace:PokeDex.Models"
-             x:Name="listPokemon">
+             x:Name="PokeDexMP">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <SearchBar Grid.Row="0" Placeholder="Cerca Pokemon" />
         <CollectionView 
             Grid.Row="1"
+            x:Name="pokemonCollectionView"
             ItemsSource="{Binding pokemonORC}"
             VerticalOptions="Fill"
             RemainingItemsThreshold="6" 
@@ -26,7 +28,7 @@
                     <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer 
-                                Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference listPokemon}}"
+                                Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference PokeDexMP}}"
                                 CommandParameter="{Binding .}"/>
                         </Border.GestureRecognizers>
                         <VisualStateManager.VisualStateGroups>
