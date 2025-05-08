@@ -7,16 +7,16 @@ namespace PokeDex
 {
     public partial class MainPage : ContentPage
     {
-        private IBaseRequest service;
+        private IPokemonService service;
 
-        public MainPage(MainPageVM mpvm, IBaseRequest service)
+        public MainPage(MainPageVM mpvm, IPokemonService service)
         {
             InitializeComponent();
             BindingContext = mpvm;
 
             // Notazione per ignorare il risultato del Task 
             this.service = service;
-            _ = mpvm.loadPokemon();
+            _ = mpvm.LoadPokemon();
         }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace PokeDex
                 var clickedPokemon = e.CurrentSelection.FirstOrDefault();
                 if (clickedPokemon != null && clickedPokemon is PokemonRow pokemon)
                 {
-                    var pokemonDetails = await service.GiveAbilitiesOfPokemon(pokemon.url);
-                    var list = pokemonDetails.ToList();
+                    var pokemonDetails = await service.GetPokemonAbility<AbilityRes<PokemonAbility<Ability>>>(pokemon.url);
+                    var list = pokemonDetails.abilities.Select(pokemonAbility => pokemonAbility.ability).ToList();
 
                     // Passo i dettagli al popup
                     if (pokemon != null)

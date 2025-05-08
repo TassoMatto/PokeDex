@@ -1,131 +1,82 @@
-﻿using PokeDex.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 using System.Net.Http.Json;
 
-namespace PokeDex.Services
+namespace PokeDex.Services 
 {
-    public class PokemonService : IBaseRequest
+    public class PokemonService(HttpClient hc) : IPokemonService
     {
-        private readonly HttpClient _httpClient;
 
-        public PokemonService(HttpClient hc) 
-        {
-            this._httpClient = hc;
-        }
+        private readonly HttpClient _httpClient = hc;
+
+        private readonly string pokemonListUrl = "https://pokeapi.co/api/v2/pokemon";
 
         /// <summary>
-        /// Restituisce la lista di pokemon a blocchi di <paramref name="limit"/> a partire da <paramref name="offset"/>
+        /// Get the list of pokemon from <paramref name="offset"/> for a maximum of <paramref name="limit"/> pokemon
         /// </summary>
-        /// <typeparam name="T">Formato delle info dei pokemon da recuperare</typeparam>
-        /// <param name="offset">Offset</param>
-        /// <param name="limit">Numero max pokemon da restituire</param>
-        /// <returns></returns>
-        public async Task<List<Pokemon>> getPokemonList<T>(int offset = 0, int limit = 20)
+        /// <typeparam name="T">API Returned Model</typeparam>
+        /// <param name="offset">Data search offset</param>
+        /// <param name="limit">Max Number of Pokemon</param>
+        /// <returns>API Response Data Model</returns>
+        public async Task<T?> GetPokemon<T>(uint offset = 0, uint limit = 20)
         {
             try
             {
-                StringBuilder sb = new StringBuilder("https://pokeapi.co/api/v2/pokemon");
-
-                if (offset > 0)
-                {
-                    sb.Append("?offset=").Append(offset);
-                    if (limit > 0) sb.Append("&limit=").Append(limit);
-                }
-                else if (limit > 0) sb.Append("?limit=").Append(limit);
-
-
-                string url = sb.ToString();
+                // HTTP GET Query Building
+                NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                queryString.Add("offset", offset.ToString());
+                queryString.Add("limit", limit.ToString());
+ 
+                string url = this.pokemonListUrl + '?' + queryString.ToString() ?? "";
                 var result = await _httpClient.GetAsync(url);
+                if(result.IsSuccessStatusCode) 
+                {
+                    var response = await result.Content.ReadFromJsonAsync<T>();
+                    return response;
+                }
+                else
+                {
+                    return default;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+                return default;
+            }
+        }
 
-                // Richiesta HTTPS andata a buon fine
-                // SUCCESS: ritorno la lista JSON dei primi pokemon
-                // ERROR: restituisco la lista vuota
+        /// <summary>
+        /// Gets a Pokemon's abilities from <paramref name="url_ability"/>
+        /// </summary>
+        /// <typeparam name="T">API Returned Model</typeparam>
+        /// <param name="url_ability">Pokemon Skill Url</param>
+        /// <returns>API Response Data Model</returns>
+        public async Task<T?> GetPokemonAbility<T>(string url_ability)
+        {
+            // Args checking
+            if(url_ability.Equals("")) 
+            {
+                Console.WriteLine("url_ability empty");
+                return default;
+            }
+
+            try
+            {
+                var result = await _httpClient.GetAsync(url_ability);
                 if (result.IsSuccessStatusCode)
                 {
-                    var response = await result.Content.ReadFromJsonAsync<ResPokemonAPI<Pokemon>>();
-                    return response?.results ?? new List<Pokemon>();
+                    var response = await result.Content.ReadFromJsonAsync<T>();
+                    return response;
+                } else 
+                {
+                    return default;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
+                return default;
             }
-            
-            return new List<Pokemon>();
         }
-
-        /// <summary>
-        /// Data una lista <paramref name="pokemons"/> costruisce la CollectionView per visualizzare i pokemon
-        /// </summary>
-        /// <param name="pokemons">Lista di pokemon</param>
-        /// <returns></returns>
-        public List<PokemonRow> buildCollectionViewRowPokemon(List<Pokemon> pokemons)
-        {
-            try
-            {
-                // Filtro pokemon nulli
-                // Effettuo cast elementi da PokemonRow? a PokemonRow 
-                var toAdd = pokemons.Select(jsonRes =>
-                {
-                    if (jsonRes.url == null)
-                    {
-                        return null;
-                    }
-                    string[] parts = (new Uri(jsonRes.url)).Segments;
-                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", "")) : -1;
-                    return new PokemonRow
-                    {
-                        name = jsonRes.name,
-                        url = jsonRes.url,
-                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
-                        id = id,
-                    };
-                }).Where(p => p != null).Cast<PokemonRow>().ToList();
-
-                return toAdd;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Errore: {ex.Message}");
-            }
-
-            return new List<PokemonRow>();
-        }
-
-        /// <summary>
-        /// Restitusci la lista delle abilità del pokemon dato <paramref name="url"/>
-        /// </summary>
-        /// <param name="url">Indirizzo delle abilità</param>
-        /// <returns></returns>
-        public async Task<List<Ability>> GiveAbilitiesOfPokemon(string? url)
-        {
-
-            if (url == null) return new List<Ability>();
-
-            try
-            {
-                var result = await _httpClient.GetAsync(url);
-                if (result.IsSuccessStatusCode)
-                {
-                    var response = await result.Content.ReadFromJsonAsync<AbilityRes<PokemonAbility<Ability>>>();
-                    if (response == null) throw new NullReferenceException();
-                    if (response.abilities == null) return new List<Ability>();
-                    return response.abilities.Select(pokemonAbility => pokemonAbility.ability).ToList();
-                }
-
-                return new List<Ability>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Errore: {ex.Message}");
-            }
-
-            return new List<Ability>();
-        }
-
     }
 }

@@ -8,21 +8,55 @@ namespace PokeDex.ViewModels
 {
     public partial class MainPageVM : CommunityToolkit.Mvvm.ComponentModel.ObservableObject, INotifyPropertyChanged
     {
-        private readonly IBaseRequest service;
-        
+
+#region ATTRIBUTE
+
+        private readonly IPokemonService service;
         private int pageSize = 20;
-
-        private int offset = 20;
-
-        private int limit = 20;
-
-        bool handling = false;
-
+        private uint offset = 20;
+        private uint limit = 20;
+        private bool isBusy = false;
         public ObservableRangeCollection<Pokemon> pokemonORC { get; set; } = new ObservableRangeCollection<Pokemon>();
-
         public ICommand LoadMorePokemonsCommand { get; }
 
-        public MainPageVM(IBaseRequest service)
+#endregion ATTRIBUTE
+
+#region PRIVATE
+        
+        private List<PokemonRow> buildCollectionViewRowPokemon(List<Pokemon> pokemons)
+        {
+            try
+            {
+                var toAdd = pokemons.Select(jsonRes =>
+                {
+                    if (jsonRes.url == null)
+                    {
+                        return null;
+                    }
+                    string[] parts = (new Uri(jsonRes.url)).Segments;
+                    int id = parts.Count() != 0 ? Int32.Parse(parts[^1].Replace("/", "")) : -1;
+                    return new PokemonRow
+                    {
+                        name = jsonRes.name,
+                        url = jsonRes.url,
+                        img_url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png",
+                        id = id,
+                    };
+                }).Where(p => p != null).Cast<PokemonRow>().ToList();
+
+                return toAdd;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+            }
+
+            return new List<PokemonRow>();
+        }
+
+#endregion PRIVATE
+
+        public MainPageVM(IPokemonService service)
         {
             this.service = service;
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
@@ -30,37 +64,34 @@ namespace PokeDex.ViewModels
         }
 
         /// <summary>
-        /// Inizializza la view
+        /// View Initialize
         /// </summary>
-        /// <returns></returns>
         public async Task InitializeAsync()
         {
             try
             {
-                await loadPokemon();
+                await LoadPokemon();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
             }
         }
-
-        /// <summary>
-        /// Carica la prima lista di pokemon
-        /// </summary>
-        /// <returns></returns>
-        public async Task loadPokemon()
+        
+        
+        public async Task LoadPokemon(uint offset = 0, uint limit = 20)
         {
             try
             {
-                var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>();
-                List<Pokemon> temp = resultAPI.ToList();
-                var toAdd = service.buildCollectionViewRowPokemon(temp);
-                pokemonORC.AddRange(toAdd.Take(pageSize));
+                var response = await service.GetPokemon<ResPokemonAPI<Pokemon>>(offset, limit);
+                if (response == null || response.results == null) return;
+                List<Pokemon> pokemonList = response.results;
+                var formatedPokemonList = this.buildCollectionViewRowPokemon(pokemonList);
+                pokemonORC.AddRange(formatedPokemonList.Take(pageSize));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Errore: {ex.Message}");
             }
         }
 
@@ -70,25 +101,12 @@ namespace PokeDex.ViewModels
         /// <returns></returns>
         public async Task getNextPokemonChunck()
         {
-            if (handling) return;
+            if (isBusy) return;
 
-            handling = true;
-            try
-            {
-                var resultAPI = await service.getPokemonList<ResPokemonAPI<Pokemon>>(this.offset, this.limit);
-                List<Pokemon> temp = resultAPI.ToList();
-                var toAdd = service.buildCollectionViewRowPokemon(temp);
-
-                Console.WriteLine(toAdd);
-                pokemonORC.AddRange(toAdd.Take(pageSize));
-                this.offset += 20;
-
-                handling = false;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            isBusy = true;
+            await this.LoadPokemon(this.offset, this.limit);
+            this.offset += 20;
+            isBusy = false;
         }
     }
 }
