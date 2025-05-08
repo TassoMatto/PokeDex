@@ -24,6 +24,11 @@ namespace PokeDex.ViewModels
 
 #region PRIVATE
         
+        /// <summary>
+        /// Builds the list of pokemon with the image and other information
+        /// </summary>
+        /// <param name="pokemons"></param>
+        /// <returns></returns>
         private List<PokemonRow> buildCollectionViewRowPokemon(List<Pokemon> pokemons)
         {
             try
@@ -73,6 +78,11 @@ namespace PokeDex.ViewModels
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
         }
 
+        /// <summary>
+        /// Get Pokemon list by <paramref name="limit"/> elements, start from <paramref name="offset"/>
+        /// </summary>
+        /// <param name="offset">Get Pokemon start from</param>
+        /// <param name="limit">Max Numbers of Returned Pokemon</param>
         public async Task LoadPokemon(uint offset = 0, uint limit = 20)
         {
             try
@@ -89,6 +99,11 @@ namespace PokeDex.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the list of the <paramref name="pokemonClicked"/>'s abilities
+        /// </summary>
+        /// <param name="pokemonClicked">Clicked Pokemon by user</param>
+        /// <returns>List contains Pokemon's abilities</returns>
         public async Task<List<Ability>> GetPokemonAbility(PokemonRow pokemonClicked) 
         {
             try

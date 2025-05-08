@@ -35,32 +35,9 @@ namespace PokeDex
 
             InitializeComponent();
             
-
-            // Notazione per ignorare il risultato del Task 
             this.service = service;
             _ = mpvm.LoadPokemon();
         }
-
-        // public ICommand OpenPokemonDetailsCommand 
-        // { 
-        //     get 
-        //     {
-        //         return new Command(
-        //             async (sender) => 
-        //             {
-        //                 List<Ability> list;
-        //                 PokemonRow? pokemonClicked = sender as PokemonRow;
-        //                 MainPageVM? mpvm = BindingContext as MainPageVM;
-        //                 if(mpvm != null && pokemonClicked != null) list = await mpvm.GetPokemonAbility(pokemonClicked);
-        //                 else list = new List<Ability>();
-
-        //                 if (pokemonClicked != null)
-        //                 {
-        //                     _ = PopupAction.DisplayPopup(new InfoPokemonPopup(pokemonClicked, list));
-        //                 }
-        //             });
-        //     }
-        // }
 
     }
 

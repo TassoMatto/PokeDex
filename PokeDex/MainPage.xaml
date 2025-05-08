@@ -11,16 +11,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <!-- 
-            Al posto della FillAndExpand ho usato la grid, impostato le caratteristiche 
-            e messo la CollView nella row1 in modo tale che si potesse scorrere 
-        -->
-        <!-- <Label Grid.Row="0"
-            Text="AAAAAAAAAAAAAAAAAAAAAAAA">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference listPokemon}}"/>
-            </Label.GestureRecognizers>
-            </Label> -->
         <CollectionView 
             Grid.Row="1"
             ItemsSource="{Binding pokemonORC}"
