@@ -18,6 +18,7 @@ namespace PokeDex.ViewModels
         private bool isBusy = false;
         public ObservableRangeCollection<Pokemon> pokemonORC { get; set; } = new ObservableRangeCollection<Pokemon>();
         public ICommand LoadMorePokemonsCommand { get; }
+        
 
 #endregion ATTRIBUTE
 
@@ -53,6 +54,16 @@ namespace PokeDex.ViewModels
 
             return new List<PokemonRow>();
         }
+        
+        private async Task getNextPokemonChunck()
+        {
+            if (isBusy) return;
+
+            isBusy = true;
+            await this.LoadPokemon(this.offset, this.limit);
+            this.offset += 20;
+            isBusy = false;
+        }
 
 #endregion PRIVATE
 
@@ -60,25 +71,8 @@ namespace PokeDex.ViewModels
         {
             this.service = service;
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
-            
         }
 
-        /// <summary>
-        /// View Initialize
-        /// </summary>
-        public async Task InitializeAsync()
-        {
-            try
-            {
-                await LoadPokemon();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Errore: {ex.Message}");
-            }
-        }
-        
-        
         public async Task LoadPokemon(uint offset = 0, uint limit = 20)
         {
             try
@@ -95,18 +89,20 @@ namespace PokeDex.ViewModels
             }
         }
 
-        /// <summary>
-        /// Carica la prox lista di pokemon
-        /// </summary>
-        /// <returns></returns>
-        public async Task getNextPokemonChunck()
+        public async Task<List<Ability>> GetPokemonAbility(PokemonRow pokemonClicked) 
         {
-            if (isBusy) return;
-
-            isBusy = true;
-            await this.LoadPokemon(this.offset, this.limit);
-            this.offset += 20;
-            isBusy = false;
+            try
+            {
+                if(pokemonClicked.url == null) return [];
+                var pokemonDetails = await service.GetPokemonAbility<AbilityRes<PokemonAbility<Ability>>>(pokemonClicked.url);
+                var list = pokemonDetails?.abilities?.Select(pokemonAbility => pokemonAbility.ability).ToList();
+                return list ?? [];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Errore: {ex.Message}");
+                return [];
+            }
         }
     }
 }

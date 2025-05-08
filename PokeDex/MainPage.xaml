@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokeDex.MainPage"
              xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
-             x:DataType="viewmodel:MainPageVM"
-             xmlns:models="clr-namespace:PokeDex.Models">
+             xmlns:models="clr-namespace:PokeDex.Models"
+             x:Name="listPokemon">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,19 +15,30 @@
             Al posto della FillAndExpand ho usato la grid, impostato le caratteristiche 
             e messo la CollView nella row1 in modo tale che si potesse scorrere 
         -->
+        <!-- <Label Grid.Row="0"
+            Text="AAAAAAAAAAAAAAAAAAAAAAAA">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference listPokemon}}"/>
+            </Label.GestureRecognizers>
+            </Label> -->
         <CollectionView 
             Grid.Row="1"
             ItemsSource="{Binding pokemonORC}"
             VerticalOptions="Fill"
             RemainingItemsThreshold="6" 
             RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}"
-            SelectionMode="Single"
-            SelectionChanged="OnClickPokemon">
+            SelectionMode="None"
+            >
             
             <CollectionView.ItemTemplate>
 
-                <DataTemplate x:DataType="models:PokemonRow">
+                <DataTemplate>
                     <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference listPokemon}}"
+                                CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup>
                                 <VisualState Name="Selected">
@@ -37,8 +48,10 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <VerticalStackLayout>
-                            <HorizontalStackLayout VerticalOptions="Center">
+                        <VerticalStackLayout CascadeInputTransparent="True"
+                            InputTransparent="True">
+                            <HorizontalStackLayout VerticalOptions="Center"
+                                >
                                 <Border
                                     WidthRequest="100"
                                     HeightRequest="100"
