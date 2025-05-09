@@ -8,17 +8,28 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <SearchBar Grid.Row="0" Placeholder="Cerca Pokemon" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Placeholder="Cerca Pokemon" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        <Picker x:Name="PokemonType"
+            Title="Seleziona tipologia"
+            ItemsSource="{Binding PokemonTypes}"
+            ItemDisplayBinding="{Binding Name}"
+            Grid.Row="0" Grid.Column="1"
+            />
+        <!-- RemainingItemsThreshold="6" 
+            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}" -->
         <CollectionView 
             Grid.Row="1"
+            Grid.ColumnSpan="2"
             x:Name="pokemonCollectionView"
             ItemsSource="{Binding pokemonORC}"
             VerticalOptions="Fill"
-            RemainingItemsThreshold="6" 
-            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}"
             SelectionMode="None"
             >
             

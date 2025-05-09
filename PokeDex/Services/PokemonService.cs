@@ -9,6 +9,21 @@ namespace PokeDex.Services
         private readonly HttpClient _httpClient = hc;
 
         private readonly string pokemonListUrl = "https://pokeapi.co/api/v2/pokemon";
+        private readonly string pokemonTypesListUrl = "https://pokeapi.co/api/v2/type/";
+
+        private async Task<T?> HTTPGetRequest<T>(string url) 
+        {
+            var result = await _httpClient.GetAsync(url);
+            if(result.IsSuccessStatusCode) 
+            {
+                var response = await result.Content.ReadFromJsonAsync<T>();
+                return response;
+            }
+            else
+            {
+                return default;
+            }
+        }
 
         /// <summary>
         /// Get the list of pokemon from <paramref name="offset"/> for a maximum of <paramref name="limit"/> pokemon
@@ -27,16 +42,7 @@ namespace PokeDex.Services
                 queryString.Add("limit", limit.ToString());
  
                 string url = this.pokemonListUrl + '?' + queryString.ToString() ?? "";
-                var result = await _httpClient.GetAsync(url);
-                if(result.IsSuccessStatusCode) 
-                {
-                    var response = await result.Content.ReadFromJsonAsync<T>();
-                    return response;
-                }
-                else
-                {
-                    return default;
-                }
+                return await HTTPGetRequest<T>(url);
             }
             catch (Exception ex)
             {
@@ -62,21 +68,20 @@ namespace PokeDex.Services
 
             try
             {
-                var result = await _httpClient.GetAsync(url_ability);
-                if (result.IsSuccessStatusCode)
-                {
-                    var response = await result.Content.ReadFromJsonAsync<T>();
-                    return response;
-                } else 
-                {
-                    return default;
-                }
+                return await HTTPGetRequest<T>(url_ability);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
                 return default;
             }
+        }
+    
+        public async Task<T?> GetPokemonTypes<T>()
+        {
+            var response = await HTTPGetRequest<T>(pokemonTypesListUrl);
+            if(response == null) return default;
+            else return response;
         }
     }
 }

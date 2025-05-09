@@ -18,8 +18,6 @@ namespace PokeDex
         public MainPage(MainPageVM mpvm, IPokemonService service)
         {
             
-            BindingContext = mpvm;
-            this.mpvm = mpvm;
             OpenPokemonDetailsCommand = new Command<PokemonRow>(async (pokemonClicked) => 
             {
                 List<Ability> list;
@@ -35,8 +33,17 @@ namespace PokeDex
 
             InitializeComponent();
             
+            this.mpvm = mpvm;
+            BindingContext = this.mpvm;
             this.service = service;
+            
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
             _ = mpvm.LoadPokemon();
+            _ = mpvm.LoadPokemonTypes();
         }
 
     }
