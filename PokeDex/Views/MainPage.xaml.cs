@@ -46,6 +46,12 @@ namespace PokeDex
             _ = mpvm.LoadPokemonTypes();
         }
 
+        public void OnPokemonTypeSelectionIndexChange(object sender, EventArgs e)
+        {
+            var picker = (Picker)sender;
+            Console.WriteLine(picker.SelectedItem);
+        }
+
     }
 
 }

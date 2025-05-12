@@ -13,16 +13,25 @@ namespace PokeDex.Services
 
         private async Task<T?> HTTPGetRequest<T>(string url) 
         {
-            var result = await _httpClient.GetAsync(url);
-            if(result.IsSuccessStatusCode) 
+            try
             {
-                var response = await result.Content.ReadFromJsonAsync<T>();
-                return response;
+                var result = await _httpClient.GetAsync(url);
+                if(result.IsSuccessStatusCode) 
+                {
+                    var response = await result.Content.ReadFromJsonAsync<T>();
+                    return response;
+                }
+                else
+                {
+                    return default;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Console.WriteLine($"Errore: {ex.Message}");
                 return default;
             }
+            
         }
 
         /// <summary>
@@ -80,6 +89,14 @@ namespace PokeDex.Services
         public async Task<T?> GetPokemonTypes<T>()
         {
             var response = await HTTPGetRequest<T>(pokemonTypesListUrl);
+            if(response == null) return default;
+            else return response;
+        }
+
+        public async Task<T?> GetPokemonByTypes<T>(string type)
+        {
+            if(type == "") return default;
+            var response = await HTTPGetRequest<T>(pokemonTypesListUrl + type);
             if(response == null) return default;
             else return response;
         }

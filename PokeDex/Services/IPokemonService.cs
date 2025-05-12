@@ -10,5 +10,6 @@ namespace PokeDex.Services
 
         public Task<T> GetPokemonTypes<T>();
 
+        public Task<T> GetPokemonByTypes<T>(string type);
     }
 }

@@ -15,11 +15,12 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Placeholder="Cerca Pokemon" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Text="{Binding TextChange}" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
         <Picker x:Name="PokemonType"
             Title="Seleziona tipologia"
             ItemsSource="{Binding PokemonTypes}"
             ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedType}"
             Grid.Row="0" Grid.Column="1"
             />
         <!-- RemainingItemsThreshold="6" 
