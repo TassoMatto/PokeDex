@@ -10,25 +10,31 @@ namespace PokeDex
     public partial class MainPage : ContentPage
     {
 
-        public ICommand OpenPokemonDetailsCommand  {get; private set;}
+        public ICommand OpenPokemonDetailsCommand  { get; private set; }
         private readonly IPokemonService service;
 
         private readonly MainPageVM mpvm;
 
+        private bool once = false;
+
+        private bool isOpening = false;
+
         public MainPage(MainPageVM mpvm, IPokemonService service)
         {
-            
             OpenPokemonDetailsCommand = new Command<PokemonRow>(async (pokemonClicked) => 
             {
-                List<Ability> list;
-                
+                if(isOpening) return;
+                isOpening = true;
+                List<Ability> list;    
                 if(this.mpvm != null && pokemonClicked != null) list = await this.mpvm.GetPokemonAbility(pokemonClicked);
                 else list = new List<Ability>();
 
                 if (pokemonClicked != null)
                 {
-                    _ = PopupAction.DisplayPopup(new InfoPokemonPopup(pokemonClicked, list));
+                    await Navigation.PushModalAsync(new InfoPokemonPopup(pokemonClicked, list));
+                    //await Navigation.PushAsync(new InfoPokemonPopup(pokemonClicked, list));
                 }
+                isOpening = false;
             });
 
             InitializeComponent();
@@ -42,8 +48,12 @@ namespace PokeDex
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _ = mpvm.LoadPokemon();
-            _ = mpvm.LoadPokemonTypes();
+            if(!once) 
+            {
+                _ = mpvm.LoadPokemon();
+                _ = mpvm.LoadPokemonTypes();
+                once = true;
+            }
         }
 
         public void OnPokemonTypeSelectionIndexChange(object sender, EventArgs e)
