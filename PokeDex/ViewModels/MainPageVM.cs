@@ -152,7 +152,17 @@ namespace PokeDex.ViewModels
                     pokemonORC.Clear();
                     pokemonORC.AddRange(list.Take(pageSize));
                 }
+#if ANDROID
+                var imm = (Android.Views.InputMethods.InputMethodManager)MauiApplication.Current.GetSystemService(Android.Content.Context.InputMethodService);
+                if (imm != null)
+                {
+                    var activity = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
+                    Android.OS.IBinder wToken = activity.CurrentFocus?.WindowToken;
+                    imm.HideSoftInputFromWindow(wToken, 0);
+                }
+#endif
             }
+            
         }
 
 #endregion PRIVATE

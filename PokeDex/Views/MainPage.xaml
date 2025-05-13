@@ -4,7 +4,8 @@
              x:Class="PokeDex.MainPage"
              xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
              xmlns:models="clr-namespace:PokeDex.Models"
-             x:Name="PokeDexMP">
+             x:Name="PokeDexMP"
+             HideSoftInputOnTapped="True">
     <Grid Margin="0" Padding="0">
         
         <Grid>
@@ -91,11 +92,6 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
-        <StackLayout
-            AbsoluteLayout.LayoutBounds="1,1,80,30" 
-            AbsoluteLayout.LayoutFlags="PositionProportional">
-            <Button Text="TOP" HorizontalOptions="Center" VerticalOptions="Center"></Button>
-        </StackLayout>
         <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Gray" Opacity="0.5" >
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer />
