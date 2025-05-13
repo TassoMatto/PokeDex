@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using MvvmHelpers;
 using PokeDex.Models;
 using PokeDex.Services;
@@ -18,7 +19,6 @@ namespace PokeDex.ViewModels
         private readonly uint limit = 20;
         private bool isBusy = false;
         public ObservableRangeCollection<Pokemon> pokemonORC { get; private set; } = [];
-        private ObservableRangeCollection<Pokemon> allPokemon { get; set; } = [];
         public ICommand LoadMorePokemonsCommand { get; }
         public ICommand SearchPokemons { get; }
         public ICommand SelectedChangeTypeCommand { get; }
@@ -34,10 +34,12 @@ namespace PokeDex.ViewModels
                 {
                     _selectedType = value;
                     OnPropertyChanged();
-                    SelectedChangeTypeCommand?.Execute(value);
+                    SearchPokemons?.Execute("");
                 }
             }
         }
+
+        public bool LoadingData { get; private set; } = true;
         
         private string _textChange;
         public string TextChange
@@ -49,7 +51,7 @@ namespace PokeDex.ViewModels
                 {
                     _textChange = value;
                     OnPropertyChanged();
-                    if(value == "") SearchPokemons?.Execute(value);
+                    if(value == "") SearchPokemons?.Execute("");
                 }
             }
         }
@@ -102,51 +104,57 @@ namespace PokeDex.ViewModels
             this.offset += 20;
             isBusy = false;
         }
-        private async Task FilterPokemonsByTextTyped(string txt) 
+        private async Task FilterPokemon()
         {
-            if(txt == "") 
+            // Check if exists a filter by type
+            if(_selectedType?.Name != "unknown" && _selectedType?.Name != null) 
             {
-                pokemonORC.Clear();
-                pokemonORC.AddRange(allPokemon.Take(pageSize));
-                //await FilterPokemonByTypePicked(SelectedType);
-            };
-
-            var filtered = this.pokemonORC.Where(p => p.name != null && p.name.Contains(txt));
-            var list = filtered.ToList();
-            if(list != null) 
-            {
-                pokemonORC.Clear();
-                pokemonORC.AddRange(list.Take(pageSize));
-            }
-        }
-        private async Task FilterPokemonByTypePicked(PokemonType type)
-        {
-            var response = await this.service.GetPokemonByTypes<ResPokemonByType>(type.Name);
-            if(response.pokemon == null) return;
-            List<ListPokemonByType> listByType = response.pokemon;
-            List<string> pokemonChecked = new List<string>();
-            foreach (var pokemon in listByType)
-            {
-                pokemonChecked.Add(pokemon.pokemon.name);
-            }
-            this.pokemonORC.Clear();
-            pokemonORC.AddRange(allPokemon.Take(pageSize));
-            //if(TextChange != null) await FilterPokemonsByTextTyped(TextChange);
-            if(type.Name == "unknown") return;
-            var indexToPop = new List<Pokemon>();
-            foreach (var pokemon in pokemonORC)
-            {
-                if(!pokemonChecked.Contains(pokemon.name))
+                var response = await this.service.GetPokemonByTypes<ResPokemonByType>(_selectedType.Name);
+                if(response?.pokemon == null) return;
+                List<ListPokemonByType> listByType = response.pokemon;
+                List<string> pokemonChecked = [];
+                foreach (var pokemon in listByType)
                 {
-                    indexToPop.Add(pokemon);
+                    var name = pokemon?.pokemon?.name ?? "";
+                    if(name != "") pokemonChecked.Add(name);
+                }
+
+                var listFilteredByType = new ObservableRangeCollection<Pokemon>(((App)Application.Current).AllPokemon);
+                var indexToPop = new List<Pokemon>();
+                foreach (var pokemon in listFilteredByType)
+                {
+                    var name = pokemon?.name ?? "";
+                    if(!pokemonChecked.Contains(name))
+                    {
+                        if(pokemon != null) indexToPop.Add(pokemon);
+                    }
+                }
+                foreach (var remove in indexToPop)
+                {
+                    listFilteredByType.Remove(remove);
+                }
+                this.pokemonORC.Clear();
+                if(listFilteredByType.Count != 0) this.pokemonORC.AddRange(listFilteredByType.Take(pageSize));
+            } 
+            else
+            {
+                this.pokemonORC.Clear();
+                pokemonORC.AddRange(((App)Application.Current).AllPokemon.Take(pageSize));
+            }
+            
+            // Check if exists a filter by text typed
+            if(_textChange != null && _textChange != "")
+            {
+                var filteredByText = this.pokemonORC.Where(p => p.name != null && p.name.Contains(_textChange));
+                var list = filteredByText.ToList();
+                if(list != null) 
+                {
+                    pokemonORC.Clear();
+                    pokemonORC.AddRange(list.Take(pageSize));
                 }
             }
-            foreach (var remove in indexToPop)
-            {
-                pokemonORC.Remove(remove);
-            }
         }
-        
+
 #endregion PRIVATE
 
         public MainPageVM(IPokemonService service)
@@ -154,14 +162,9 @@ namespace PokeDex.ViewModels
             this.service = service;
             this.PokemonTypes = new ObservableRangeCollection<PokemonType>();
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
-            SelectedChangeTypeCommand = new Command<PokemonType>((type) => 
+            SearchPokemons = new Command(() =>
             {
-                _ = Task.Run(async () => { await FilterPokemonByTypePicked(type); });
-            }
-            );
-            SearchPokemons = new Command<string>((txt) => 
-            {
-                Task.Run(async () => { await FilterPokemonsByTextTyped(txt); });
+                Task.Run(async () => { await FilterPokemon(); });
             });
         }
 
@@ -179,7 +182,7 @@ namespace PokeDex.ViewModels
                 List<Pokemon> pokemonList = response.results;
                 var formatedPokemonList = this.buildCollectionViewRowPokemon(pokemonList);
                 pokemonORC.AddRange(formatedPokemonList.Take(pageSize));
-                allPokemon.AddRange(formatedPokemonList.Take(pageSize));
+                ((App) Application.Current).AllPokemon.AddRange(formatedPokemonList.Take(pageSize));
             }
             catch (Exception ex)
             {

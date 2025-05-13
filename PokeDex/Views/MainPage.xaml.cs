@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using MauiPopup;
 using PokeDex.Models;
 using PokeDex.Services;
@@ -24,6 +25,8 @@ namespace PokeDex
             OpenPokemonDetailsCommand = new Command<PokemonRow>(async (pokemonClicked) => 
             {
                 if(isOpening) return;
+                DataLoadIndicator.IsVisible = true;
+                DataLoadIndicatorBackground.IsVisible = true;
                 isOpening = true;
                 List<Ability> list;    
                 if(this.mpvm != null && pokemonClicked != null) list = await this.mpvm.GetPokemonAbility(pokemonClicked);
@@ -32,8 +35,9 @@ namespace PokeDex
                 if (pokemonClicked != null)
                 {
                     await Navigation.PushModalAsync(new InfoPokemonPopup(pokemonClicked, list));
-                    //await Navigation.PushAsync(new InfoPokemonPopup(pokemonClicked, list));
                 }
+                DataLoadIndicator.IsVisible = false;
+                DataLoadIndicatorBackground.IsVisible = false;
                 isOpening = false;
             });
 
@@ -42,7 +46,6 @@ namespace PokeDex
             this.mpvm = mpvm;
             BindingContext = this.mpvm;
             this.service = service;
-            
         }
 
         protected override void OnAppearing()
@@ -50,16 +53,16 @@ namespace PokeDex
             base.OnAppearing();
             if(!once) 
             {
-                _ = mpvm.LoadPokemon();
-                _ = mpvm.LoadPokemonTypes();
+                Task.Run(async () => 
+                {
+                    await mpvm.LoadPokemon();
+                    await mpvm.LoadPokemonTypes();
+                    DataLoadIndicator.IsVisible = false;
+                    DataLoadIndicatorBackground.IsVisible = false;
+                });
+                
                 once = true;
             }
-        }
-
-        public void OnPokemonTypeSelectionIndexChange(object sender, EventArgs e)
-        {
-            var picker = (Picker)sender;
-            Console.WriteLine(picker.SelectedItem);
         }
 
     }

@@ -5,90 +5,105 @@
              xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
              xmlns:models="clr-namespace:PokeDex.Models"
              x:Name="PokeDexMP">
+    <Grid Margin="0" Padding="0">
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                 <RowDefinition Height="auto" />
+                <!--<RowDefinition Height="auto" /> -->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Text="{Binding TextChange}" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+            <Picker x:Name="PokemonType"
+                Title="Seleziona tipologia"
+                ItemsSource="{Binding PokemonTypes}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedType}"
+                Grid.Row="0" Grid.Column="1"
+                />
+            <CollectionView 
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                x:Name="pokemonCollectionView"
+                ItemsSource="{Binding pokemonORC}"
+                VerticalOptions="Fill"
+                SelectionMode="None"
+                ItemsUpdatingScrollMode="KeepItemsInView"
+                >
+                
+                <CollectionView.ItemTemplate>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-        </Grid.ColumnDefinitions>
-        <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Text="{Binding TextChange}" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
-        <Picker x:Name="PokemonType"
-            Title="Seleziona tipologia"
-            ItemsSource="{Binding PokemonTypes}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedType}"
-            Grid.Row="0" Grid.Column="1"
-            />
-        <!-- RemainingItemsThreshold="6" 
-            RemainingItemsThresholdReachedCommand="{Binding LoadMorePokemonsCommand}" -->
-        <CollectionView 
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            x:Name="pokemonCollectionView"
-            ItemsSource="{Binding pokemonORC}"
-            VerticalOptions="Fill"
-            SelectionMode="None"
-            >
-            
-            <CollectionView.ItemTemplate>
-
-                <DataTemplate>
-                    <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference PokeDexMP}}"
-                                CommandParameter="{Binding .}"/>
-                        </Border.GestureRecognizers>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup>
-                                <VisualState Name="Selected">
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <VerticalStackLayout CascadeInputTransparent="True"
-                            InputTransparent="True">
-                            <HorizontalStackLayout VerticalOptions="Center"
-                                >
-                                <Border
-                                    WidthRequest="100"
-                                    HeightRequest="100"
-                                    Stroke="Gray"
-                                    StrokeThickness="1"
-                                    StrokeShape="RoundRectangle 200"
-                                    BackgroundColor="White"
+                    <DataTemplate>
+                        <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference PokeDexMP}}"
+                                    CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup>
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="WhiteSmoke"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <VerticalStackLayout CascadeInputTransparent="True"
+                                InputTransparent="True">
+                                <HorizontalStackLayout VerticalOptions="Center"
                                     >
-                                    <Image
-                                        WidthRequest="99"
-                                        HeightRequest="99"
-                                        Source="{Binding img_url}">
+                                    <Border
+                                        WidthRequest="100"
+                                        HeightRequest="100"
+                                        Stroke="Gray"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 200"
+                                        BackgroundColor="White"
+                                        >
+                                        <Image
+                                            WidthRequest="99"
+                                            HeightRequest="99"
+                                            Source="{Binding img_url}">
 
-                                    </Image>
-                                </Border>
-                                <VerticalStackLayout VerticalOptions="Center" Margin="10">
-                                    <HorizontalStackLayout VerticalOptions="Center">
-                                        <Label Text="NOME:   " VerticalOptions="Center"></Label>
-                                        <Label Text="{Binding name}" VerticalOptions="Center"></Label>
-                                    </HorizontalStackLayout>
-                                    
-                                    <HorizontalStackLayout VerticalOptions="Center">
-                                        <Label Text="NUMERO: " VerticalOptions="Center"></Label>
-                                        <Label Text="{Binding id}" VerticalOptions="Center"></Label>
-                                    </HorizontalStackLayout>
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
+                                        </Image>
+                                    </Border>
+                                    <VerticalStackLayout VerticalOptions="Center" Margin="10">
+                                        <HorizontalStackLayout VerticalOptions="Center">
+                                            <Label Text="NOME:   " VerticalOptions="Center"></Label>
+                                            <Label Text="{Binding name}" VerticalOptions="Center"></Label>
+                                        </HorizontalStackLayout>
+                                        
+                                        <HorizontalStackLayout VerticalOptions="Center">
+                                            <Label Text="NUMERO: " VerticalOptions="Center"></Label>
+                                            <Label Text="{Binding id}" VerticalOptions="Center"></Label>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
 
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+        <StackLayout
+            AbsoluteLayout.LayoutBounds="1,1,80,30" 
+            AbsoluteLayout.LayoutFlags="PositionProportional">
+            <Button Text="TOP" HorizontalOptions="Center" VerticalOptions="Center"></Button>
+        </StackLayout>
+        <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Gray" Opacity="0.5" >
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer />
+            </AbsoluteLayout.GestureRecognizers>
+            <StackLayout  Margin="0" Padding="0" AbsoluteLayout.LayoutBounds="0.5,0.5,AutoSize,AutoSize"
+                     AbsoluteLayout.LayoutFlags="PositionProportional" HorizontalOptions="Center" VerticalOptions="Fill" >
+                <ActivityIndicator x:Name="DataLoadIndicator" IsVisible="{Binding LoadingData}" IsRunning="True" Color="Red"/>
+            </StackLayout>
+        </AbsoluteLayout>
     </Grid>
-
 </ContentPage>

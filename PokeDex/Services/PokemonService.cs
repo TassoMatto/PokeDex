@@ -86,14 +86,14 @@ namespace PokeDex.Services
             }
         }
     
-        public async Task<T?> GetPokemonTypes<T>()
+        public async Task<T> GetPokemonTypes<T>()
         {
             var response = await HTTPGetRequest<T>(pokemonTypesListUrl);
             if(response == null) return default;
             else return response;
         }
 
-        public async Task<T?> GetPokemonByTypes<T>(string type)
+        public async Task<T> GetPokemonByTypes<T>(string type)
         {
             if(type == "") return default;
             var response = await HTTPGetRequest<T>(pokemonTypesListUrl + type);
