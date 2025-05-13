@@ -11,7 +11,7 @@ namespace PokeDex.Services
         private readonly string pokemonListUrl = "https://pokeapi.co/api/v2/pokemon";
         private readonly string pokemonTypesListUrl = "https://pokeapi.co/api/v2/type/";
 
-        private async Task<T?> HTTPGetRequest<T>(string url) 
+        private async Task<T> HTTPGetRequest<T>(string url) where T : new ()
         {
             try
             {
@@ -19,17 +19,18 @@ namespace PokeDex.Services
                 if(result.IsSuccessStatusCode) 
                 {
                     var response = await result.Content.ReadFromJsonAsync<T>();
+                    if(response == null) return new T ();
                     return response;
                 }
                 else
                 {
-                    return default;
+                    return new T ();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
-                return default;
+                return new T ();
             }
             
         }
@@ -41,7 +42,7 @@ namespace PokeDex.Services
         /// <param name="offset">Data search offset</param>
         /// <param name="limit">Max Number of Pokemon</param>
         /// <returns>API Response Data Model</returns>
-        public async Task<T?> GetPokemon<T>(uint offset = 0, uint limit = 20)
+        public async Task<T> GetPokemon<T>(uint offset = 0, uint limit = 20) where T : new()
         {
             try
             {
@@ -56,7 +57,7 @@ namespace PokeDex.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
-                return default;
+                return new T ();
             }
         }
 
@@ -66,13 +67,13 @@ namespace PokeDex.Services
         /// <typeparam name="T">API Returned Model</typeparam>
         /// <param name="url_ability">Pokemon Skill Url</param>
         /// <returns>API Response Data Model</returns>
-        public async Task<T?> GetPokemonAbility<T>(string url_ability)
+        public async Task<T> GetPokemonAbility<T>(string url_ability) where T : new()
         {
             // Args checking
             if(url_ability.Equals("")) 
             {
                 Console.WriteLine("url_ability empty");
-                return default;
+                return new T ();
             }
 
             try
@@ -82,22 +83,22 @@ namespace PokeDex.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Errore: {ex.Message}");
-                return default;
+                return new T ();
             }
         }
     
-        public async Task<T> GetPokemonTypes<T>()
+        public async Task<T> GetPokemonTypes<T>() where T : new()
         {
             var response = await HTTPGetRequest<T>(pokemonTypesListUrl);
-            if(response == null) return default;
+            if(response == null) return new T ();
             else return response;
         }
 
-        public async Task<T> GetPokemonByTypes<T>(string type)
+        public async Task<T> GetPokemonByTypes<T>(string type) where T : new()
         {
-            if(type == "") return default;
+            if(type == "") return new T ();
             var response = await HTTPGetRequest<T>(pokemonTypesListUrl + type);
-            if(response == null) return default;
+            if(response == null) return new T ();
             else return response;
         }
     }
