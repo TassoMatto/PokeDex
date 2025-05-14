@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PokeDex.MainPage"
+             x:Class="PokeDex.Views.MainPage"
              xmlns:viewmodel="clr-namespace:PokeDex.ViewModels"
              xmlns:models="clr-namespace:PokeDex.Models"
              x:Name="PokeDexMP"
              HideSoftInputOnTapped="True">
     <Grid Margin="0" Padding="0">
-        
         <Grid>
             <Grid.RowDefinitions>
                  <RowDefinition Height="auto" />
@@ -29,7 +28,7 @@
             <CollectionView 
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
-                x:Name="pokemonCollectionView"
+                x:Name="PokemonCollectionView"
                 ItemsSource="{Binding pokemonORC}"
                 VerticalOptions="Fill"
                 SelectionMode="None"
@@ -92,7 +91,8 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
-        <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Gray" Opacity="0.5" >
+        <Button BackgroundColor="Red" Text="TOP" HorizontalOptions="End" VerticalOptions="End" Margin="10" Clicked="OnButtonClicked"/>
+        <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Transparent" Opacity="0.5" >
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer />
             </AbsoluteLayout.GestureRecognizers>

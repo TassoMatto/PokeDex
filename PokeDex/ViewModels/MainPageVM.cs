@@ -21,7 +21,6 @@ namespace PokeDex.ViewModels
         public ObservableRangeCollection<Pokemon> pokemonORC { get; private set; } = [];
         public ICommand LoadMorePokemonsCommand { get; }
         public ICommand SearchPokemons { get; }
-        public ICommand SelectedChangeTypeCommand { get; }
         public ObservableRangeCollection<PokemonType> PokemonTypes { get; set; } = [];
         
         private PokemonType _selectedType;

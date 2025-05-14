@@ -1,9 +1,9 @@
-﻿using PokeDex.Models;
+using PokeDex.Models;
 using System.Collections.Generic;
 
 namespace PokeDex.ViewModels
 {
-    public class InfoPokemonPopupVM(PokemonRow p, List<Ability> a)
+    public class InfoPokemonPopupVm(PokemonRow p, List<Ability> a)
     {
         public string? name { get; set; } = p.name;
         public string? img_url { get; set; } = p.img_url;

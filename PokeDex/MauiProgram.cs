@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PokeDex.Services;
 using PokeDex.ViewModels;
+using PokeDex.Views;
 
 namespace PokeDex;
 
@@ -17,7 +18,7 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-		// Registro i servizi
+		// Service Register
 		builder.Services.AddSingleton<IPokemonService, PokemonService>();
         builder.Services.AddTransient<MainPageVM>();
         builder.Services.AddTransient<MainPage>();
