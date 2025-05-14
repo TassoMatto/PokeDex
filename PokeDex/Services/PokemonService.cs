@@ -3,10 +3,8 @@ using System.Net.Http.Json;
 
 namespace PokeDex.Services 
 {
-    public class PokemonService(HttpClient hc) : IPokemonService
+    public class PokemonService : IPokemonService
     {
-
-        private readonly HttpClient _httpClient = hc;
 
         private readonly string pokemonListUrl = "https://pokeapi.co/api/v2/pokemon";
         private readonly string pokemonTypesListUrl = "https://pokeapi.co/api/v2/type/";
@@ -15,16 +13,19 @@ namespace PokeDex.Services
         {
             try
             {
-                var result = await _httpClient.GetAsync(url);
-                if(result.IsSuccessStatusCode) 
+                using (var client = new HttpClient())
                 {
-                    var response = await result.Content.ReadFromJsonAsync<T>();
-                    if(response == null) return new T ();
-                    return response;
-                }
-                else
-                {
-                    return new T ();
+                    var result = await client.GetAsync(url);
+                    if(result.IsSuccessStatusCode) 
+                    {
+                        var response = await result.Content.ReadFromJsonAsync<T>();
+                        if(response == null) return new T ();
+                        return response;
+                    }
+                    else
+                    {
+                        return new T ();
+                    }
                 }
             }
             catch (Exception ex)

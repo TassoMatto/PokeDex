@@ -15,6 +15,6 @@ namespace PokeDex.Models
         /// <summary>
         /// Lista abilità
         /// </summary>
-        public List<T>? abilities {  get; set; }
+        public List<T> abilities {  get; set; }
     }
 }

@@ -9,9 +9,8 @@
         /// <summary>
         /// Lista abilità
         /// </summary>
-        public required T ability { get; set; }
-        
-        public bool isHidden { get; set; }
+        public T ability { get; set; }
+        public bool is_hidden { get; set; }
         public int slot { get; set; }
     }
 

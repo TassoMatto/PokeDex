@@ -18,7 +18,7 @@ public static class MauiProgram
 			});
 
 		// Registro i servizi
-		builder.Services.AddHttpClient<IPokemonService, PokemonService>();
+		builder.Services.AddSingleton<IPokemonService, PokemonService>();
         builder.Services.AddTransient<MainPageVM>();
         builder.Services.AddTransient<MainPage>();
 
