@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokeDex.Views.LoginPage">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Fill">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalOptions="Center" Text="Username: "/>
+                    <Entry x:Name="Username" Grid.Row="0" Grid.Column="1" Placeholder="Username" />
+                    <Label Grid.Row="1" Grid.Column="0" VerticalOptions="Center" Text="Password: "/>
+                    <Entry x:Name="Password" Grid.Row="1" Grid.Column="1" IsPassword="True" Placeholder="Password" />
+                </Grid>
+                <!-- Meglio usare una grid anzichè uno HorizStackLayout perchè la formattazione avviene in modo verticale 
+                    quindi in modo illogico rispetto a come è stato pensato -->
+                
+            </VerticalStackLayout>
+            <Button Grid.Row="1" Text="Accedi" Command="{Binding UserLoginCommand}" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

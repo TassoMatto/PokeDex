@@ -76,10 +76,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Views\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Update="InfoPokemonPopup.xaml.cs">
 	    <DependentUpon>InfoPokemonPopup.xaml</DependentUpon>
 	  </Compile>
