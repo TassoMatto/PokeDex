@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace PokeDex.ViewModels
 {
-    public partial class MainPageVM : CommunityToolkit.Mvvm.ComponentModel.ObservableObject, INotifyPropertyChanged
+    public partial class MainPageVM : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
 
 #region ATTRIBUTE

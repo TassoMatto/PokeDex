@@ -6,41 +6,41 @@
              xmlns:models="clr-namespace:PokeDex.Models"
              x:Name="PokeDexMP"
              HideSoftInputOnTapped="True">
-    <Grid Margin="0" Padding="0">
-        <Grid>
-            <Grid.RowDefinitions>
-                 <RowDefinition Height="auto" />
-                <!--<RowDefinition Height="auto" /> -->
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Text="{Binding TextChange}" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
-            <Picker x:Name="PokemonType"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <!--<RowDefinition Height="auto" /> -->
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <SearchBar x:Name="searchBar" Grid.Row="0" Grid.Column="0" Text="{Binding TextChange}" SearchCommand="{Binding SearchPokemons}" SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        <Picker x:Name="PokemonType"
                 Title="Seleziona tipologia"
                 ItemsSource="{Binding PokemonTypes}"
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding SelectedType}"
                 Grid.Row="0" Grid.Column="1"
-                />
-            <CollectionView 
-                Grid.Row="1"
-                Grid.ColumnSpan="2"
+        />
+        <AbsoluteLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <CollectionView
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
                 x:Name="PokemonCollectionView"
                 ItemsSource="{Binding PokemonOrc}"
                 VerticalOptions="Fill"
                 SelectionMode="None"
                 ItemsUpdatingScrollMode="KeepItemsInView"
                 >
-                
+            
                 <CollectionView.ItemTemplate>
-
+            
                     <DataTemplate>
                         <Border Stroke="#A9090D"  BackgroundColor="WhiteSmoke" Padding="10" Margin="10">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer 
+                                <TapGestureRecognizer
                                     Command="{Binding OpenPokemonDetailsCommand, Source={x:Reference PokeDexMP}}"
                                     CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
@@ -69,7 +69,7 @@
                                             WidthRequest="99"
                                             HeightRequest="99"
                                             Source="{Binding img_url}">
-
+            
                                         </Image>
                                     </Border>
                                     <VerticalStackLayout VerticalOptions="Center" Margin="10">
@@ -77,7 +77,7 @@
                                             <Label Text="NOME:   " VerticalOptions="Center"></Label>
                                             <Label Text="{Binding name}" VerticalOptions="Center"></Label>
                                         </HorizontalStackLayout>
-                                        
+            
                                         <HorizontalStackLayout VerticalOptions="Center">
                                             <Label Text="NUMERO: " VerticalOptions="Center"></Label>
                                             <Label Text="{Binding id}" VerticalOptions="Center"></Label>
@@ -87,17 +87,16 @@
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
-
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </Grid>
-        <Button HeightRequest="50" WidthRequest="50" ImageSource="PokeDex/Resources/Images/top.png" BackgroundColor="Red" HorizontalOptions="End" VerticalOptions="End" Margin="10" Clicked="OnButtonClicked"/>
-        <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Transparent" Opacity="0.5" >
-            <AbsoluteLayout.GestureRecognizers>
-                <TapGestureRecognizer />
-            </AbsoluteLayout.GestureRecognizers>
+            <Button
+                AbsoluteLayout.LayoutBounds="0.98,0.98,50,50"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                BackgroundColor="DarkRed"
+                ImageSource="PokeDex/Resources/Images/top.png"
+                Clicked="OnButtonClicked" />
             <StackLayout  Margin="0" Padding="0" AbsoluteLayout.LayoutBounds="0.5,0.5,AutoSize,AutoSize"
-                     AbsoluteLayout.LayoutFlags="PositionProportional" HorizontalOptions="Center" VerticalOptions="Fill" >
+                          AbsoluteLayout.LayoutFlags="PositionProportional" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <ActivityIndicator x:Name="DataLoadIndicator" IsVisible="{Binding LoadingData}" IsRunning="True" Color="Red"/>
             </StackLayout>
         </AbsoluteLayout>
