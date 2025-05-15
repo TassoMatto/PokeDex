@@ -24,8 +24,7 @@ namespace PokeDex.Views
                 try
                 {
                     if (_isOpening) return;
-                    DataLoadIndicator.IsVisible = true;
-                    DataLoadIndicatorBackground.IsVisible = true;
+                    _mpvm.ShowLoadActivity();
                     _isOpening = true;
 
                     List<Ability> list;
@@ -42,8 +41,7 @@ namespace PokeDex.Views
                 }
                 finally
                 {
-                    DataLoadIndicator.IsVisible = false;
-                    DataLoadIndicatorBackground.IsVisible = false;
+                    _mpvm.HideLoadActivity();
                     _isOpening = false;
                 }
             });
@@ -63,8 +61,7 @@ namespace PokeDex.Views
             {
                 await _mpvm.LoadPokemon();
                 await _mpvm.LoadPokemonTypes();
-                DataLoadIndicator.IsVisible = false;
-                DataLoadIndicatorBackground.IsVisible = false;
+                _mpvm.HideLoadActivity();
             });
                 
             _once = true;

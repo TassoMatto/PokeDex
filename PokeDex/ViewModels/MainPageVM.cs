@@ -4,6 +4,7 @@ using MvvmHelpers;
 using PokeDex.Models;
 using PokeDex.Services;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace PokeDex.ViewModels
@@ -12,7 +13,7 @@ namespace PokeDex.ViewModels
     {
 
 #region ATTRIBUTE
-
+ 
         private readonly IPokemonService service;
         private readonly int pageSize = 1302;
         private uint offset = 20;
@@ -38,7 +39,17 @@ namespace PokeDex.ViewModels
             }
         }
 
-        public bool LoadingData { get; private set; } = true;
+        private bool _loadingData = true;
+        public bool LoadingData
+        {
+            get => _loadingData;
+            set
+            {
+                if (value == _loadingData) return;
+                _loadingData = value;
+                OnPropertyChanged();
+            }
+        }
         
         private string _textChange;
         public string TextChange
@@ -173,7 +184,12 @@ namespace PokeDex.ViewModels
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
             SearchPokemons = new Command(() =>
             {
-                Task.Run(async () => { await FilterPokemon(); });
+                Task.Run(async () =>
+                {
+                    LoadingData = true;
+                    await FilterPokemon();
+                    LoadingData = false;
+                });
             });
         }
 
@@ -236,6 +252,14 @@ namespace PokeDex.ViewModels
                 Console.WriteLine($"Errore: {ex.Message}");
                 return;
             }
+        }
+        public void HideLoadActivity()
+        {
+            this.LoadingData = false;
+        }
+        public void ShowLoadActivity()
+        {
+            this.LoadingData = false;
         }
     }
 }
