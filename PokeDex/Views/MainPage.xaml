@@ -29,7 +29,7 @@
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
                 x:Name="PokemonCollectionView"
-                ItemsSource="{Binding pokemonORC}"
+                ItemsSource="{Binding PokemonOrc}"
                 VerticalOptions="Fill"
                 SelectionMode="None"
                 ItemsUpdatingScrollMode="KeepItemsInView"

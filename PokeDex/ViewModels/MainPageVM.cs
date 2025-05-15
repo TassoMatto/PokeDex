@@ -6,6 +6,7 @@ using PokeDex.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.Extensions.Configuration;
 
 namespace PokeDex.ViewModels
 {
@@ -14,16 +15,15 @@ namespace PokeDex.ViewModels
 
 #region ATTRIBUTE
  
-        private readonly IPokemonService service;
-        private readonly int pageSize = 1302;
-        private uint offset = 20;
-        private readonly uint limit = 20;
-        private bool isBusy = false;
-        public ObservableRangeCollection<Pokemon> pokemonORC { get; private set; } = [];
+        private readonly IPokemonService _service;
+        private readonly int _pageSize = 1302;
+        private uint _offset = 20;
+        private readonly uint _limit = 20;
+        private bool _isBusy = false;
+        public ObservableRangeCollection<Pokemon> PokemonOrc { get; private set; } = [];
         public ICommand LoadMorePokemonsCommand { get; }
         public ICommand SearchPokemons { get; }
         public ObservableRangeCollection<PokemonType> PokemonTypes { get; set; } = [];
-        
         private PokemonType _selectedType;
         public PokemonType SelectedType 
         {
@@ -38,7 +38,6 @@ namespace PokeDex.ViewModels
                 }
             }
         }
-
         private bool _loadingData = true;
         public bool LoadingData
         {
@@ -50,7 +49,6 @@ namespace PokeDex.ViewModels
                 OnPropertyChanged();
             }
         }
-        
         private string _textChange;
         public string TextChange
         {
@@ -107,19 +105,19 @@ namespace PokeDex.ViewModels
         }
         private async Task getNextPokemonChunck()
         {
-            if (isBusy) return;
+            if (_isBusy) return;
 
-            isBusy = true;
-            await this.LoadPokemon(this.offset, this.limit);
-            this.offset += 20;
-            isBusy = false;
+            _isBusy = true;
+            await this.LoadPokemon(this._offset, this._limit);
+            this._offset += 20;
+            _isBusy = false;
         }
         private async Task FilterPokemon()
         {
             // Check if exists a filter by type
             if(_selectedType?.Name != "unknown" && _selectedType?.Name != null) 
             {
-                var response = await this.service.GetPokemonByTypes<ResPokemonByType>(_selectedType.Name);
+                var response = await this._service.GetPokemonByTypes<ResPokemonByType>(_selectedType.Name);
                 if(response?.pokemon == null) return;
                 List<ListPokemonByType> listByType = response.pokemon;
                 List<string> pokemonChecked = [];
@@ -143,24 +141,24 @@ namespace PokeDex.ViewModels
                 {
                     listFilteredByType.Remove(remove);
                 }
-                this.pokemonORC.Clear();
-                if(listFilteredByType.Count != 0) this.pokemonORC.AddRange(listFilteredByType.Take(pageSize));
+                this.PokemonOrc.Clear();
+                if(listFilteredByType.Count != 0) this.PokemonOrc.AddRange(listFilteredByType.Take(_pageSize));
             } 
             else
             {
-                this.pokemonORC.Clear();
-                pokemonORC.AddRange(((App)Application.Current).AllPokemon.Take(pageSize));
+                this.PokemonOrc.Clear();
+                PokemonOrc.AddRange(((App)Application.Current).AllPokemon.Take(_pageSize));
             }
             
             // Check if exists a filter by text typed
             if(_textChange != null && _textChange != "")
             {
-                var filteredByText = this.pokemonORC.Where(p => p.name != null && p.name.Contains(_textChange));
+                var filteredByText = this.PokemonOrc.Where(p => p.name != null && p.name.Contains(_textChange));
                 var list = filteredByText.ToList();
                 if(list != null) 
                 {
-                    pokemonORC.Clear();
-                    pokemonORC.AddRange(list.Take(pageSize));
+                    PokemonOrc.Clear();
+                    PokemonOrc.AddRange(list.Take(_pageSize));
                 }
 #if ANDROID
                 var imm = (Android.Views.InputMethods.InputMethodManager)MauiApplication.Current.GetSystemService(Android.Content.Context.InputMethodService);
@@ -177,9 +175,9 @@ namespace PokeDex.ViewModels
 
 #endregion PRIVATE
 
-        public MainPageVM(IPokemonService service)
+        public MainPageVM(IPokemonService service, IConfiguration config)
         {
-            this.service = service;
+            this._service = service;
             this.PokemonTypes = new ObservableRangeCollection<PokemonType>();
             LoadMorePokemonsCommand = new Command(async () => await getNextPokemonChunck());
             SearchPokemons = new Command(() =>
@@ -202,16 +200,17 @@ namespace PokeDex.ViewModels
         {
             try
             {
-                var response = await service.GetPokemon<ResPokemonAPI<Pokemon>>(offset, limit);
+                var response = await _service.GetPokemon<ResPokemonAPI<Pokemon>>(offset, limit);
                 if (response == null || response.results == null) return;
                 List<Pokemon> pokemonList = response.results;
                 var formatedPokemonList = this.buildCollectionViewRowPokemon(pokemonList);
-                pokemonORC.AddRange(formatedPokemonList.Take(pageSize));
-                ((App) Application.Current).AllPokemon.AddRange(formatedPokemonList.Take(pageSize));
+                PokemonOrc.AddRange(formatedPokemonList.Take(_pageSize));
+                ((App) Application.Current).AllPokemon.AddRange(formatedPokemonList.Take(_pageSize));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Errore: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
             }
         }
 
@@ -225,8 +224,9 @@ namespace PokeDex.ViewModels
             try
             {
                 if(pokemonClicked.url == null) return [];
-                var pokemonDetails = await service.GetPokemonAbility<AbilityRes<PokemonAbility<Ability>>>(pokemonClicked.url);
+                var pokemonDetails = await _service.GetPokemonAbility<AbilityRes<PokemonAbility<Ability>>>(pokemonClicked.url);
                 var list = pokemonDetails?.abilities?.Select(pokemonAbility => pokemonAbility.ability).ToList();
+                
                 return list ?? [];
             }
             catch (Exception ex)
@@ -236,11 +236,14 @@ namespace PokeDex.ViewModels
             }
         }
     
+        /// <summary>
+        /// Set list of all pokemon's types
+        /// </summary>
         public async Task LoadPokemonTypes()
         {
             try
             {
-                var response = await this.service.GetPokemonTypes<ResPokemonAPI<PokemonType>>();
+                var response = await this._service.GetPokemonTypes<ResPokemonAPI<PokemonType>>();
                 if(response?.results != null) 
                 {
                     var types_list = response.results;
@@ -259,7 +262,7 @@ namespace PokeDex.ViewModels
         }
         public void ShowLoadActivity()
         {
-            this.LoadingData = false;
+            this.LoadingData = true;
         }
     }
 }

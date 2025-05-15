@@ -8,6 +8,12 @@ namespace PokeDex.Services
         private const string pokemonListUrl = "https://pokeapi.co/api/v2/pokemon";
         private const string pokemonTypesListUrl = "https://pokeapi.co/api/v2/type/";
 
+        /// <summary>
+        /// Send a Get Http Request to <paramref name="url"/>
+        /// </summary>
+        /// <param name="url">Request URL</param>
+        /// <typeparam name="T">Response Model</typeparam>
+        /// <returns>JSON Model</returns>
         private static async Task<T> HttpGetRequest<T>(string url) where T : new ()
         {
             try
@@ -27,7 +33,7 @@ namespace PokeDex.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new T ();
+                throw;
             }
             
         }
@@ -54,7 +60,7 @@ namespace PokeDex.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new T ();
+                throw;
             }
         }
 
@@ -80,21 +86,48 @@ namespace PokeDex.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new T ();
+                throw;
             }
         }
     
+        /// <summary>
+        /// Get List of pokemon's types
+        /// </summary>
+        /// <typeparam name="T">Response Model</typeparam>
+        /// <returns>List of all pokemon's types</returns>
         public async Task<T> GetPokemonTypes<T>() where T : new()
         {
-            var response = await HttpGetRequest<T>(pokemonTypesListUrl);
-            return response ?? new T ();
+            try
+            {
+                var response = await HttpGetRequest<T>(pokemonTypesListUrl);
+                return response ?? new T();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
+        /// <summary>
+        /// Return pokemon's list having that <paramref name="type"/>
+        /// </summary>
+        /// <param name="type">Pokemon's type</param>
+        /// <typeparam name="T">Response JSON</typeparam>
+        /// <returns>Pokemon's list by type</returns>
         public async Task<T> GetPokemonByTypes<T>(string type) where T : new()
         {
-            if(type == "") return new T ();
-            var response = await HttpGetRequest<T>(pokemonTypesListUrl + type);
-            return response ?? new T ();
+            try
+            {
+                if(type == "") return new T ();
+                var response = await HttpGetRequest<T>(pokemonTypesListUrl + type);
+                return response ?? new T ();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

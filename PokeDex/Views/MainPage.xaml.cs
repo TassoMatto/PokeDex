@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Google.Android.Material.Snackbar;
 using PokeDex.Models;
 using PokeDex.Services;
 using PokeDex.ViewModels;
@@ -31,7 +32,7 @@ namespace PokeDex.Views
                     if (this._mpvm != null && pokemonClicked != null)
                         list = await this._mpvm.GetPokemonAbility(pokemonClicked);
                     else list = [];
-
+                    
                     if (pokemonClicked != null)
                         await Navigation.PushModalAsync(new InfoPokemonPopup(pokemonClicked, list));
                 }
@@ -59,11 +60,18 @@ namespace PokeDex.Views
             if (_once) return;
             Task.Run(async () => 
             {
-                await _mpvm.LoadPokemon();
-                await _mpvm.LoadPokemonTypes();
-                _mpvm.HideLoadActivity();
+                try
+                {
+                    await _mpvm.LoadPokemon();
+                    await _mpvm.LoadPokemonTypes();
+                    _mpvm.HideLoadActivity();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             });
-                
+            
             _once = true;
         }
 
