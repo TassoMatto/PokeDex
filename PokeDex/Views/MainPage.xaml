@@ -91,7 +91,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </Grid>
-        <Button BackgroundColor="Red" Text="TOP" HorizontalOptions="End" VerticalOptions="End" Margin="10" Clicked="OnButtonClicked"/>
+        <Button HeightRequest="50" WidthRequest="50" ImageSource="PokeDex/Resources/Images/top.png" BackgroundColor="Red" HorizontalOptions="End" VerticalOptions="End" Margin="10" Clicked="OnButtonClicked"/>
         <AbsoluteLayout x:Name="DataLoadIndicatorBackground" IsVisible="{Binding LoadingData}" Margin="0" Padding="0" BackgroundColor="Transparent" Opacity="0.5" >
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer />
