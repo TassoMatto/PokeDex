@@ -11,7 +11,7 @@ namespace PokeDex.Views;
 public partial class LoginPage : ContentPage
 {
     public ICommand UserLoginCommand { get; set; }
-    private LoginPageVm _lpvm;
+    private LoginPageVm _lpvm { get; set; }
     
     public LoginPage(LoginPageVm vm)
     {

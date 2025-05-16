@@ -19,6 +19,8 @@ public class LoginPageVm : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
         if (this._service.CheckAutentication(Username, Password))
         {
             Preferences.Set("timeLogged", DateTime.Now.Ticks);
+            this.Username = "";
+            this.Password = "";
             return true;
         }
         
