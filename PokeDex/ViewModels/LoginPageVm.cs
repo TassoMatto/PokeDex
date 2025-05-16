@@ -9,34 +9,19 @@ public class LoginPageVm : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     private readonly ILoginService _service;
     public string Username { get; set; } = "";
     public string Password { get; set; } = "";
-    public ICommand UserLoginCommand { get; set; }
-
-#region PRIVATE
-
     /// <summary>
     /// User login into Pokedex
     /// </summary>
-    private async Task LoginUser()
+    public async Task<bool> LoginUser()
     {
-        if (Username == "" || Password == "") return;
-        
-        var loginDone = this._service.CheckAutentication(Username, Password);
-        if (loginDone)
-        {
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
-        }
-        
-    }
+        if (Username == "" || Password == "") return false;
 
-#endregion PRIVATE
+        return this._service.CheckAutentication(Username, Password);
+    }
 
     public LoginPageVm(ILoginService service)
     {
         this._service = service;
-        this.UserLoginCommand = new Command(async () =>
-        {
-            await LoginUser();
-        });
     }
 
 }

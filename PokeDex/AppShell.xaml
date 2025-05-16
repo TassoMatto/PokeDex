@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:PokeDex.Views"
     Shell.TabBarIsVisible="False"
-    
+    x:Name="ShellPage"
     Title="PokeDex">
 
     <ShellContent
@@ -27,7 +27,7 @@
     
     <Shell.FlyoutFooter>
         <StackLayout Padding="20">
-            <Button Text="Logout" Command="{Binding LogoutCommand}" />
+            <Button Text="Logout" Command="{Binding LogoutCommand, Source={x:Reference ShellPage}}" />
         </StackLayout>
     </Shell.FlyoutFooter>
 </Shell>

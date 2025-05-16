@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokeDex.Views.LoginPage"
              Shell.NavBarIsVisible="False"
+             x:Name="LoginP"
              >
     <ContentPage.Content>
         <Grid Margin="0" Padding="0" BackgroundColor="#f4bec0">
@@ -42,7 +43,7 @@
                            HorizontalOptions="Center" />
                     <Entry Text="{Binding Password}" Grid.Column="1" HorizontalOptions="Fill" IsPassword="True" Placeholder="Password" TextColor="WhiteSmoke" PlaceholderColor="PapayaWhip"/>
                 </Grid>
-                <Button Text="Accedi" Command="{Binding UserLoginCommand}" HorizontalOptions="Fill" Margin="70, 0, 70, 0"/>
+                <Button Text="Accedi" Command="{Binding UserLoginCommand, Source={x:Reference LoginP}}" HorizontalOptions="Fill" Margin="70, 0, 70, 0"/>
             </VerticalStackLayout>
         </Grid>
     </ContentPage.Content>
