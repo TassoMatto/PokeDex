@@ -2,36 +2,48 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PokeDex.Views.LoginPage">
+             x:Class="PokeDex.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             >
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" HorizontalOptions="Fill">
+        <Grid Margin="0" Padding="0" BackgroundColor="#f4bec0">
+            <Rectangle BackgroundColor="PaleVioletRed" RadiusX="20" Margin="15, 170, 15, 170"></Rectangle>
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill" Margin="30" Spacing="40">
                 <Grid>
+                    <Rectangle VerticalOptions="Center" BackgroundColor="WhiteSmoke" WidthRequest="130" HeightRequest="50" RadiusX="50"></Rectangle>
+                    <Label Text="POKEDEX LOGIN" TextColor="#E5262C" VerticalOptions="Center" HorizontalOptions="Center"/>
+                </Grid>
+                
+                <Grid ColumnSpacing="15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" VerticalOptions="Center" Text="Username: "/>
-                    <Entry x:Name="Username" Grid.Row="0" Grid.Column="1" Placeholder="Username" />
-                    <Label Grid.Row="1" Grid.Column="0" VerticalOptions="Center" Text="Password: "/>
-                    <Entry x:Name="Password" Grid.Row="1" Grid.Column="1" IsPassword="True" Placeholder="Password" />
+                    <Rectangle Grid.Column="0" BackgroundColor="WhiteSmoke" WidthRequest="50" HeightRequest="50" RadiusX="50" />
+                    <Label Grid.Column="0" Text="&#xe71b;"
+                           FontFamily="MaterialAssets"
+                           FontSize="24"
+                           TextColor="Black"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Center" />
+                    <Entry Text="{Binding Username}" Grid.Column="1" HorizontalOptions="Fill" Placeholder="Username" TextColor="WhiteSmoke" PlaceholderColor="PapayaWhip" />
                 </Grid>
-                <!-- Meglio usare una grid anzichè uno HorizStackLayout perchè la formattazione avviene in modo verticale 
-                    quindi in modo illogico rispetto a come è stato pensato -->
-                
+                <Grid ColumnSpacing="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Column="0" BackgroundColor="WhiteSmoke" WidthRequest="50" HeightRequest="50" RadiusX="50" />
+                    <Label Grid.Column="0" Text="&#xe777;"
+                           FontFamily="MaterialAssets"
+                           FontSize="24"
+                           TextColor="Black"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Center" />
+                    <Entry Text="{Binding Password}" Grid.Column="1" HorizontalOptions="Fill" IsPassword="True" Placeholder="Password" TextColor="WhiteSmoke" PlaceholderColor="PapayaWhip"/>
+                </Grid>
+                <Button Text="Accedi" Command="{Binding UserLoginCommand}" HorizontalOptions="Fill" Margin="70, 0, 70, 0"/>
             </VerticalStackLayout>
-            <Button Grid.Row="1" Text="Accedi" Command="{Binding UserLoginCommand}" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

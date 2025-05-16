@@ -16,12 +16,16 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+				fonts.AddFont("MauiMaterialAssets.ttf", "MaterialAssets");
 			});
 
 		// Service Register
 		builder.Services.AddSingleton<IPokemonService, PokemonService>();
-        builder.Services.AddTransient<MainPageVM>();
-        builder.Services.AddTransient<MainPage>();
+		builder.Services.AddSingleton<ILoginService, LoginService>();
+        builder.Services.AddSingleton<MainPageVM>();
+        builder.Services.AddSingleton<LoginPageVm>();
+        builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddSingleton<LoginPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

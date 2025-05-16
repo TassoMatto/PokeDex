@@ -3,14 +3,31 @@
     x:Class="PokeDex.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PokeDex"
     xmlns:views="clr-namespace:PokeDex.Views"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarIsVisible="False"
+    
     Title="PokeDex">
 
     <ShellContent
-        Title="PokeDex"
+        Title="Login"
+        FlyoutItemIsVisible="False"
+        Shell.FlyoutBehavior="Disabled"
         ContentTemplate="{DataTemplate views:LoginPage}"
-        Route="LoginPage" />
+        Route="LoginPage"
+        />
 
+    <FlyoutItem Title="PokeDex" Icon="PokeDex/Resources/Images/pokeball.png">
+        <ShellContent
+            
+            Title="PokeDex"
+            ContentTemplate="{DataTemplate views:MainPage}"
+            Route="MainPage"
+        />
+    </FlyoutItem>
+    
+    <Shell.FlyoutFooter>
+        <StackLayout Padding="20">
+            <Button Text="Logout" Command="{Binding LogoutCommand}" />
+        </StackLayout>
+    </Shell.FlyoutFooter>
 </Shell>
