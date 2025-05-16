@@ -11,11 +11,14 @@ namespace PokeDex
         {
             this.LogoutCommand = new Command(async () =>
             {
+                Preferences.Remove("timeLogged");
                 await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");   
             });
             InitializeComponent();
             
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+            Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
+            Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
         }
     }
 }

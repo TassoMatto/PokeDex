@@ -7,6 +7,9 @@
     Shell.TabBarIsVisible="False"
     x:Name="ShellPage"
     Title="PokeDex">
+    
+    <ShellContent FlyoutItemIsVisible="False" Shell.FlyoutBehavior="Disabled"
+                  ContentTemplate="{DataTemplate views:LoadingPage}" Route="LoadingPage" />
 
     <ShellContent
         Title="Login"

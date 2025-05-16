@@ -16,7 +16,13 @@ public class LoginPageVm : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
     {
         if (Username == "" || Password == "") return false;
 
-        return this._service.CheckAutentication(Username, Password);
+        if (this._service.CheckAutentication(Username, Password))
+        {
+            Preferences.Set("timeLogged", DateTime.Now.Ticks);
+            return true;
+        }
+        
+        return false;
     }
 
     public LoginPageVm(ILoginService service)
